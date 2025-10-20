@@ -3,8 +3,7 @@ import { FiMenu, FiMoon, FiSun, FiX } from 'react-icons/fi';
 import { Link } from 'react-router-dom';
 import useThemeSwitcher from '../../hooks/useThemeSwitcher';
 import HireMeModal from '../HireMeModal';
-import logoLight from '../../images/logo-light.svg';
-import logoDark from '../../images/logo-dark.svg';
+import logo from '../../images/logo.png';
 import { motion } from 'framer-motion';
 import Button from '../reusable/Button';
 
@@ -47,19 +46,21 @@ const AppHeader = () => {
 				<div className="flex justify-between items-center px-4 sm:px-0">
 					<div>
 						<Link to="/">
-							{activeTheme === 'dark' ? (
-								<img
-									src={logoDark}
-									className="w-36"
-									alt="Dark Logo"
-								/>
-							) : (
-								<img
-									src={logoLight}
-									className="w-36"
-									alt="Dark Logo"
-								/>
-							)}
+                            {activeTheme === 'dark' ? (
+                                <img
+                                    src={logo}
+                                    className="w-auto object-contain"
+                                    style={{ height: '40px' }}
+                                    alt="Dark Logo"
+                                />
+                            ) : (
+                                <img
+                                    src={logo}
+                                    className="w-auto object-contain"
+                                    style={{ height: '40px' }}
+                                    alt="Light Logo"
+                                />
+                            )}
 						</Link>
 					</div>
 
