@@ -1,0 +1,2 @@
+(this["webpackJsonpreact-tailwindcss-portfolio"]=this["webpackJsonpreact-tailwindcss-portfolio"]||[]).push([[7],{43:function(t,a,i){"use strict";i.d(a,"a",function(){return n});var c=i(1);function n(t){return Object(c.a)({tag:"svg",attr:{viewBox:"0 0 512 512"},child:[{tag:"path",attr:{d:"M289.94 256l95-95A24 24 0 00351 127l-95 95-95-95a24 24 0 00-34 34l95 95-95 95a24 24 0 1034 34l95-95 95 95a24 24 0 0034-34z"}}]})(t)}}}]);
+//# sourceMappingURL=7.4fe43907.chunk.js.map
