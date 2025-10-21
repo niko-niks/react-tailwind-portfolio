@@ -1,9 +1,8 @@
 import { useContext, useState } from 'react';
-import { FiSearch } from 'react-icons/fi';
+import { FiSearch, FiClock, FiTag } from 'react-icons/fi';
 import ProjectSingle from './ProjectSingle';
 import { ProjectsContext } from '../../context/ProjectsContext';
 import ProjectsFilter from './ProjectsFilter';
-import { singleProjectData } from '../../data/singleProjectData'; // Import single project data
 
 const ProjectsGrid = () => {
     const {
@@ -23,11 +22,9 @@ const ProjectsGrid = () => {
         setIsPopupOpen(true);
     };
 
-    // Find matching images from singleProjectData based on project ID
-    const getProjectImages = (id) => {
-        return singleProjectData.ProjectImages.filter(img =>
-            projects.find(p => p.id === id)?.title === img.title
-        ).slice(0, 3); // Limit to 3 images
+    // Remove singleProjectData reference and use project's own images
+    const getProjectImages = (project) => {
+        return project.ProjectImages?.slice(0, 3) || [{ img: project.img }];
     };
 
     return (
@@ -141,78 +138,79 @@ const ProjectsGrid = () => {
             </div>
 
             {/* Popup Modal */}
-            {isPopupOpen && selectedProject && (
-                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-                    <div className="bg-secondary-light dark:bg-ternary-dark p-6 rounded-lg shadow-lg max-w-2xl w-full">
-						<button
-                            onClick={() => setIsPopupOpen(false)}
-                            className="absolute top-4 right-6 text-red-200 hover:text-red-500 text-3xl font-bold"
-                        >
-                            &times;
-                        </button>
-						<p>
-                        <h3 className="text-2xl font-bold text-ternary-dark dark:text-ternary-light mb-4">
+{isPopupOpen && selectedProject && (
+    <div className="fixed inset-0 bg-black bg-opacity-50 z-50 overflow-hidden">
+        <div className="flex items-start justify-center min-h-screen px-4 py-6 sm:p-0">
+            <div className="bg-secondary-light dark:bg-ternary-dark rounded-lg shadow-lg w-full max-w-md sm:max-w-lg md:max-w-2xl relative">
+                {/* Close button with theme-adjusted colors */}
+                <button
+                    onClick={() => {
+                        setIsPopupOpen(false);
+                        document.body.style.overflow = 'unset'; // Re-enable background scroll
+                    }}
+                    className="absolute top-4 right-4 bg-primary-light dark:bg-ternary-dark p-2 rounded-full z-10 focus:outline-none focus:ring-2 focus:ring-ternary-dark dark:focus:ring-ternary-light transition-colors duration-300 hover:bg-gray-200 dark:hover:bg-gray-700"
+                    aria-label="Close modal"
+                >
+                    <span className="text-ternary-dark dark:text-ternary-light text-xl">&times;</span>
+                </button>
+                
+                {/* Modal content with scrollable inner container */}
+                <div className="overflow-y-auto max-h-[90vh] p-4 sm:p-6">
+                    <div className="text-center">
+                        <h3 className="text-xl sm:text-2xl font-bold text-ternary-dark dark:text-ternary-light mb-4">
                             {selectedProject.title}
                         </h3>
-						</p>
-                        <p className="text-lg text-ternary-dark dark:text-ternary-light mb-4">
+                        <p className="text-base sm:text-lg text-ternary-dark dark:text-ternary-light mb-4">
                             Category: {selectedProject.category}
                         </p>
                         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-4">
-                            {getProjectImages(selectedProject.id).map((img, index) => (
+                            {getProjectImages(selectedProject).map((img, index) => (
                                 <img
                                     key={index}
                                     src={img.img}
                                     alt={`${selectedProject.title} Image ${index + 1}`}
-                                    className="w-30 h-30 object-cover rounded-lg"
+                                    className="w-full h-auto object-contain rounded-lg"
                                 />
                             ))}
                         </div>
-                        {/* Dynamic details based on project */}
-                       {selectedProject.id === 1 && (
-                            <>
-                                <p className="text-ternary-dark dark:text-ternary-light mb-2">
-                                    Tags: UI / Frontend, Web Development<br />
-                                    Date: Jul 26, 2021
-                                </p>
-                                <p className="text-ternary-dark dark:text-ternary-light pt-4"> {/* Added pt-4 for top padding */}
-                                    Description: A project management UI built with React and TailwindCSS.
-                                </p>
-                            </>
-                        )}
-                        {selectedProject.id === 2 && (
-                            <>
-                                <p className="text-ternary-dark dark:text-ternary-light mb-2">
-                                    Tags: Mobile Development
-                                </p>
-                                <p className="text-ternary-dark dark:text-ternary-light pt-4"> {/* Added pt-4 for top padding */}
-                                    Description: A mobile app for monitoring blood pressure with real-time data.
-                                </p>
-                            </>
-                        )}
-                        {selectedProject.id === 3 && (
-                            <>
-                                <p className="text-ternary-dark dark:text-ternary-light mb-2">
-                                    Tags: Mobile Development, React
-                                </p>
-                                <p className="text-ternary-dark dark:text-ternary-light pt-4"> {/* Added pt-4 for top padding */}
-                                    Description: A social networking app built with React Native.
-                                </p>
-                            </>
-                        )}
-                        {selectedProject.id === 4 && (
-                            <>
-                                <p className="text-ternary-dark dark:text-ternary-light mb-2">
-                                    Tags: UI / Frontend, Web Design
-                                </p>
-                                <p className="text-ternary-dark dark:text-ternary-light pt-4"> {/* Added pt-4 for top padding */}
-                                    Description: A design system for Apple-inspired web applications.
-                                </p>
-                            </>
-                        )}
+                        
+                        {/* Project details */}
+                        <div className="mt-4">
+                            <div className="flex flex-col sm:flex-row justify-between items-center mb-2 space-y-2 sm:space-y-0">
+                                <div className="flex items-center">
+                                    <FiClock className="text-lg text-ternary-dark dark:text-ternary-light mr-2" />
+                                    <span className="text-base sm:text-lg text-ternary-dark dark:text-ternary-light">
+                                        {selectedProject.ProjectHeader.publishDate}
+                                    </span>
+                                </div>
+                                <div className="flex items-center">
+                                    <FiTag className="text-lg text-ternary-dark dark:text-ternary-light mr-2" />
+                                    <span className="text-base sm:text-lg text-ternary-dark dark:text-ternary-light">
+                                        {selectedProject.ProjectHeader.tags.join(', ')}
+                                    </span>
+                                </div>
+                            </div>
+                            <p className="text-base sm:text-lg text-ternary-dark dark:text-ternary-light mt-4">
+                                {selectedProject.description || 
+                                 selectedProject.ProjectInfo?.ObjectivesDetails ||
+                                 `A ${selectedProject.category} project.`}
+                            </p>
+                        </div>
                     </div>
                 </div>
-            )}
+            </div>
+        </div>
+        {/* Overlay for closing on click/tap */}
+        <div 
+            className="fixed inset-0 z-40"
+            onClick={() => {
+                setIsPopupOpen(false);
+                document.body.style.overflow = 'unset'; // Re-enable background scroll
+            }}
+            aria-hidden="true"
+        ></div>
+    </div>
+)}
         </section>
     );
 };
